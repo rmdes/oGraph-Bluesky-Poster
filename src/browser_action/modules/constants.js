@@ -5,6 +5,7 @@ export const ACTIVE_TAB_BUTTON_CLASS = `.popup__tab-btn${ACTIVE_CLASS}`;
 export const CONTENT_BOX_ACTIVE_CLASS = `.content-box${ACTIVE_CLASS}`;
 export const TABS_ID = "tabs";
 export const COPY_BTN_ID = "copy-btn";
+
 export const TOAST_ID = "toast";
 export const ERROR = "error";
 export const CODE_CONTAINER_ID = "codeui";

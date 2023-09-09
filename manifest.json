@@ -1,18 +1,18 @@
 {
-  "name": "OGraph Previewer",
-  "version": "2.0.0",
+  "name": "Bluesky Poster",
+  "version": "2.0.1",
   "manifest_version": 3,
-  "description": "A light-weight extension to preview the open graph tags ( og tags) of the page in your current tab",
-  "author": "Parthipan Natkunam",
+  "description": "A light-weight extension to preview the open graph tags ( og tags) of the page in your current tab and use its content to post to Bluesky",
+  "author": "Parthipan Natkunam / Ricardo Mendes",
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
   },
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "storage"],
   "action": {
-    "default_icon": "icons/icon19.png",
-    "default_title": "oGraph Previewer",
+    "default_icon": "icons/icon.png",
+    "default_title": "Bluesky Poster",
     "default_popup": "browser_action.html"
   }
 }

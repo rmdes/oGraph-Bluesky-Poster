@@ -44,6 +44,61 @@ const getPreviewTemplateString = (
   return templateString;
 };
 
+// // Add new function to handle UI changes after Bluesky login
+// export function updateBlueskyLoginUI(success, handle, pdsUrl) {
+//   const loggedInMessageElem = document.getElementById("logged-in-message");
+//   const loginFormElem = document.getElementById("login-form");
+//   const userInputFormElem = document.getElementById("user-input-form");
+  
+//   if (success) {
+//     // Hide the login form
+//     loginFormElem.style.display = "none";
+    
+//     // Show the logged-in message
+//     loggedInMessageElem.textContent = `Logged in as ${handle} on ${pdsUrl}`;
+//     loggedInMessageElem.style.display = "block";
+    
+//     // Show the user input form for creating a post
+//     userInputFormElem.style.display = "block";
+//   } else {
+//     // If login failed, show the login form and hide the logged-in message and user input form
+//     loginFormElem.style.display = "block";
+//     loggedInMessageElem.style.display = "none";
+//     userInputFormElem.style.display = "none";
+//   }
+// }
+
+
+// // viewRenderers.js
+
+// Add new function to handle UI changes after Bluesky login
+export function updateBlueskyLoginUI(success, handle, pdsUrl) {
+  const loggedInMessageElem = document.getElementById("logged-in-message");
+  const loginFormElem = document.getElementById("login-form");
+  const userInputFormElem = document.getElementById("user-input-form");
+  const pdsUrlElem = document.getElementById("pds-url");
+
+  if (success) {
+    // Hide the login form and PDS URL input
+    loginFormElem.style.display = "none";
+    pdsUrlElem.style.display = "none";
+    
+    // Show the logged-in message
+    loggedInMessageElem.textContent = `Logged in as ${handle} on ${pdsUrl}`;
+    loggedInMessageElem.style.display = "block";
+    
+    // Show the user input form for creating a post
+    userInputFormElem.style.display = "block";
+  } else {
+    // If login failed, show the login form and hide the logged-in message and user input form
+    loginFormElem.style.display = "block";
+    pdsUrlElem.style.display = "block";
+    loggedInMessageElem.style.display = "none";
+    userInputFormElem.style.display = "none";
+  }
+}
+
+
 /*populate datatab UI*/
 export function updateDataView() {
   const dataUIContainer = document.getElementById(CODE_CONTAINER_ID);
