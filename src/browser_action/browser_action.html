@@ -18,9 +18,10 @@
       </div>
       <div class="popup__tab-content">
         <div class="content-box active" id="bluesky">
-          <h2>Bluesky Server</h2>
-          <label for="pds-url">PDS URL: </label>
-          <input type="text" id="pds-url" name="pds-url" placeholder="https:/bsky.social">
+          <div id="pds-url-container">
+            <label for="pds-url">PDS URL: </label>
+            <input type="text" id="pds-url" name="pds-url" placeholder="https:/bsky.social">
+          </div>
           <h2>Bluesky Authentication</h2>
           <!-- Add ID for the logged-in message -->
           <p id="logged-in-message" style="display: none;"></p>

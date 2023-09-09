@@ -69,19 +69,46 @@ const getPreviewTemplateString = (
 // }
 
 
-// // viewRenderers.js
+// // // viewRenderers.js
+
+// // Add new function to handle UI changes after Bluesky login
+// export function updateBlueskyLoginUI(success, handle, pdsUrl) {
+//   const loggedInMessageElem = document.getElementById("logged-in-message");
+//   const loginFormElem = document.getElementById("login-form");
+//   const userInputFormElem = document.getElementById("user-input-form");
+//   const pdsUrlElem = document.getElementById("pds-url");
+
+//   if (success) {
+//     // Hide the login form and PDS URL input
+//     loginFormElem.style.display = "none";
+//     pdsUrlElem.style.display = "none";
+    
+//     // Show the logged-in message
+//     loggedInMessageElem.textContent = `Logged in as ${handle} on ${pdsUrl}`;
+//     loggedInMessageElem.style.display = "block";
+    
+//     // Show the user input form for creating a post
+//     userInputFormElem.style.display = "block";
+//   } else {
+//     // If login failed, show the login form and hide the logged-in message and user input form
+//     loginFormElem.style.display = "block";
+//     pdsUrlElem.style.display = "block";
+//     loggedInMessageElem.style.display = "none";
+//     userInputFormElem.style.display = "none";
+//   }
+// }
 
 // Add new function to handle UI changes after Bluesky login
 export function updateBlueskyLoginUI(success, handle, pdsUrl) {
   const loggedInMessageElem = document.getElementById("logged-in-message");
   const loginFormElem = document.getElementById("login-form");
   const userInputFormElem = document.getElementById("user-input-form");
-  const pdsUrlElem = document.getElementById("pds-url");
+  const pdsUrlContainerElem = document.getElementById("pds-url-container");  // New variable
 
   if (success) {
     // Hide the login form and PDS URL input
     loginFormElem.style.display = "none";
-    pdsUrlElem.style.display = "none";
+    pdsUrlContainerElem.style.display = "none";  // Updated line
     
     // Show the logged-in message
     loggedInMessageElem.textContent = `Logged in as ${handle} on ${pdsUrl}`;
@@ -92,11 +119,34 @@ export function updateBlueskyLoginUI(success, handle, pdsUrl) {
   } else {
     // If login failed, show the login form and hide the logged-in message and user input form
     loginFormElem.style.display = "block";
-    pdsUrlElem.style.display = "block";
+    pdsUrlContainerElem.style.display = "block";  // Updated line
     loggedInMessageElem.style.display = "none";
     userInputFormElem.style.display = "none";
   }
 }
+
+
+
+
+// function updateBlueskyLoginUI(loggedIn, handle = '', pdsUrl = '') {
+//   const loginForm = document.getElementById('login-form');
+//   const loggedInMessage = document.getElementById('logged-in-message');
+//   const pdsUrlLabel = document.querySelector('label[for="pds-url"]');
+//   const pdsUrlInput = document.getElementById('pds-url');
+
+//   if (loggedIn) {
+//     loginForm.style.display = 'none';
+//     loggedInMessage.textContent = `Logged in as ${handle} on ${pdsUrl}`;
+//     loggedInMessage.style.display = 'block';
+//     pdsUrlLabel.style.display = 'none';
+//     pdsUrlInput.style.display = 'none';
+//   } else {
+//     loginForm.style.display = 'block';
+//     loggedInMessage.style.display = 'none';
+//     pdsUrlLabel.style.display = 'block';
+//     pdsUrlInput.style.display = 'block';
+//   }
+// }
 
 
 /*populate datatab UI*/
