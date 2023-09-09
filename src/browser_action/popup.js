@@ -4,6 +4,9 @@ import data from "./modules/state";
 import { parseOGData, getCurrentTab } from "./modules/utils";
 import renderViews, { updateBlueskyLoginUI } from './modules/viewRenderers';
 import * as blueskyApi from './modules/blueskyApi';
+import { showToast, autoDismissToast } from "./modules/eventHandlers";
+import { TOAST_ID, NOTIFY_SUCCESS } from './modules/constants'; // Import from correct file
+
 
 
 // Event handlers for tabs and copy data
@@ -104,19 +107,59 @@ document.getElementById("bluesky-post-btn").addEventListener("click", async () =
     return;
   }
 
-  // Call createPost function from blueskyApi
-  const result = await blueskyApi.createPost(pdsUrl, accessJwt, did, ogData, userText, useOpenGraphData);  // <-- Added useOpenGraphData
+// Call createPost function from blueskyApi
+console.log("About to call createPost...");
+const result = await blueskyApi.createPost(pdsUrl, accessJwt, did, ogData, userText, useOpenGraphData);
+console.log("createPost result:", result);
 
-  if (result.success) {
-    console.log("Post created successfully", result.cid);
-    // You can also update the UI here to reflect successful post creation
-  } else {
-    console.log("Failed to create post");
-    // You can update the UI here to reflect the failure
-  }
+if (result.success) {
+  console.log("Post created successfully, CID:", result.cid);
+
+  // Clear the input fields and checkbox
+  console.log("About to clear input fields...");
+  document.getElementById("user-text-input").value = '';
+  document.getElementById("use-og-data-checkbox").checked = false;
+  console.log("Input fields cleared.");
+  
+  // Show a success message
+  console.log("About to show the toast...");
+  const toastElement = document.getElementById(TOAST_ID);
+  console.log("Toast element:", toastElement);
+
+  showToast({
+    toastElement: toastElement,
+    type: NOTIFY_SUCCESS,
+    message: "Post created successfully!",
+  });
+  autoDismissToast(toastElement);
+  console.log("Toast should have been shown.");
+
+} else {
+  console.log("Failed to create post");
+  // You can update the UI here to reflect the failure
+}
 });
 
+// if (result.success) {
+//   console.log("Post created successfully", result.cid);
+  
+//   // Clear the input fields
+//   document.getElementById("user-text-input").value = "";
 
+//   // Show the success toast message
+//   const toastElement = document.getElementById(TOAST_ID);
+//   showToast({
+//     toastElement: toastElement,
+//     type: NOTIFY_SUCCESS,
+//     message: "Post created successfully!",
+//   });
+//   autoDismissToast(toastElement);
+
+//   // You can also update the UI here to reflect successful post creation
+// } else {
+//   console.log("Failed to create post");
+//   // You can update the UI here to reflect the failure
+// }
 
 // Function to save key-value pairs to Chrome local storage
 function saveToLocalStorage(key, value) {
@@ -136,6 +179,19 @@ function loadFromLocalStorage(key) {
     });
   });
 }
+
+// Loading from local storage
+document.addEventListener('DOMContentLoaded', function() {
+  chrome.storage.local.get(['accessJwt'], function(result) {
+    if (result.accessJwt) {
+      // Update the UI to reflect that the user is logged in
+      console.log('User is logged in.');
+    } else {
+      // Update the UI to reflect that the user is not logged in
+      console.log('User is not logged in.');
+    }
+  });
+});
 
 
 // Function to clear a key from Chrome local storage
@@ -165,3 +221,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateBlueskyLoginUI(false);
   }
 });
+
