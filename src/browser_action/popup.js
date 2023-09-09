@@ -48,6 +48,15 @@ document.getElementById("bluesky-login-btn").addEventListener("click", async () 
   }
 });
 
+// Event listener for Logout
+document.getElementById("logout-btn").addEventListener("click", async () => {
+  // Clear accessJwt from local storage
+  await clearFromLocalStorage('accessJwt');
+  
+  // Update the UI to reflect logged-out state
+  updateBlueskyLoginUI(false);
+});
+
 // Event listener for Bluesky post creation
 document.getElementById("bluesky-post-btn").addEventListener("click", async () => {
   // Debugging lines to check the elements
@@ -124,6 +133,19 @@ function loadFromLocalStorage(key) {
         return reject(chrome.runtime.lastError);
       }
       resolve(result[key]);
+    });
+  });
+}
+
+
+// Function to clear a key from Chrome local storage
+function clearFromLocalStorage(key) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.remove([key], function() {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
+      resolve();
     });
   });
 }
