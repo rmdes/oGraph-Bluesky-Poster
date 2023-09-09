@@ -39,4 +39,4 @@ A chrome extension to quickly preview open graph meta tag data of any web page i
 5. The output directory named `dist` will be generated with production ready bundle.
 
 ### Credit:
-- ALL the credits goes to the original [OGgraph Preview Extension](https://github.com/Parthipan-Natkunam/oGraph-previwer)
+- ALL the credits goes to the original [OGgraph Preview Extension](https://github.com/Parthipan-Natkunam/oGraph-previwer) I merely identified a good extension to build upon and ported python code to post to bluesky in javascript and then adapted the extention UI to turn it into a client for bluesky. 
