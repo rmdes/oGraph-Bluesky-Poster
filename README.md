@@ -13,7 +13,7 @@ A chrome extension to quickly preview open graph meta tag data of any web page i
 
 - Display a visual `:og` data preview of the page in the current tab.
 - Copy Data in JSON format with just a click of a button
-- Post the current Tab link + OpenGrah data to Bluesky as Embed Card
+- Post the current Tab link + OpenGrah + Text data to Bluesky as Embed Card
 - Serve as minimal Chrome client to post text to Bluesky
 
 
