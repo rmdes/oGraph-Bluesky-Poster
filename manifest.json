@@ -5,9 +5,9 @@
   "description": "A Chrome Bluesky client that uses OpenGraph tags from your current open tab to post to Bluesky",
   "author": "Ricardo Mendes",
   "icons": {
-    "16": "icons/icon.png",
-    "48": "icons/icon.png",
-    "128": "icons/icon.png"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "permissions": ["scripting", "activeTab", "storage"],
   "action": {
