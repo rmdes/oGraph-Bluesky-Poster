@@ -12,7 +12,7 @@
   "permissions": ["scripting", "activeTab", "storage"],
   "action": {
     "default_icon": "icons/icon.png",
-    "default_title": "Bluesky Poster",
+    "default_title": "oGraph Bluesky Poster",
     "default_popup": "browser_action.html"
   }
 }
