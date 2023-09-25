@@ -1,9 +1,9 @@
 {
-  "name": "Bluesky Poster",
+  "name": "oGraph Bluesky Poster",
   "version": "2.0.1",
   "manifest_version": 3,
-  "description": "A light-weight extension to preview the open graph tags ( og tags) of the page in your current tab and use its content to post to Bluesky",
-  "author": "Parthipan Natkunam / Ricardo Mendes",
+  "description": "A Chrome Bluesky client that uses OpenGraph tags from your current open tab to post to Bluesky",
+  "author": "Ricardo Mendes",
   "icons": {
     "16": "icons/icon.png",
     "48": "icons/icon.png",
