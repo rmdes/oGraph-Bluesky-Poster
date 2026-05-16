@@ -3,5 +3,6 @@ bundle.js
 *.js.map
 dist
 coverage
+yarn.lock
 Bluesky-Poster.zip
 OGraph Bluesky Poster.zip

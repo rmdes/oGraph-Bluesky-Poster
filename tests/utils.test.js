@@ -1,7 +1,4 @@
-import {
-  getImageWidth,
-  getOgParserCodeString,
-} from "../src/browser_action/modules/utils";
+import { getImageWidth } from "../src/browser_action/modules/utils";
 
 describe("Application Utility Method: getImageWidth", () => {
   test("rejects the promise, when iamgeURL is empty", () => {

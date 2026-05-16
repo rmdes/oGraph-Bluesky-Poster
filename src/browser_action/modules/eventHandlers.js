@@ -18,7 +18,7 @@ export const isButton = (element) => element?.tagName === "BUTTON" || false;
 export const hideToast = (toastElement) => {
   toastElement.style.display = DISPLAY_NONE;
   toastElement.classList.remove(ERROR);
-  toastElement.innerHTML = "";
+  toastElement.textContent = "";
 };
 
 export const autoDismissToast = (toastElement, timeout = 3000) => {
@@ -36,8 +36,19 @@ export const showToast = ({ toastElement, type, message }) => {
     default:
       toastElement.classList.remove(ERROR);
   }
-  toastElement.innerHTML = message;
+  // textContent (not innerHTML): toast strings are always plain text.
+  // Avoids XSS if any future call site passes user-controlled data.
+  toastElement.textContent = message;
   toastElement.style.display = DISPLAY_BLOCK;
+};
+
+// Convenience wrapper: show + auto-dismiss with one call, looking up the
+// toast element by id so callers don't need to know the DOM contract.
+export const notify = (type, message) => {
+  const toastElement = document.getElementById(TOAST_ID);
+  if (!toastElement) return;
+  showToast({ toastElement, type, message });
+  autoDismissToast(toastElement);
 };
 
 export const switchTab = (event) => {

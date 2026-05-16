@@ -18,30 +18,41 @@
       </div>
       <div class="popup__tab-content">
         <div class="content-box active" id="bluesky">
-          <div id="pds-url-container">
-            <label for="pds-url">PDS URL: </label>
-            <input type="text" id="pds-url" name="pds-url" placeholder="https:/bsky.social">
-          </div>
           <h2>Bluesky Authentication</h2>
-          <!-- Add ID for the logged-in message -->
           <p id="logged-in-message" style="display: none;"></p>
-          <button id="logout-btn" style="display: none;">Logout</button> <!-- New Logout Button -->
-          <!-- Add ID for the login form -->
-          <div id="login-form">
-            <label for="handle">Handle: </label>
-            <input type="text" id="handle" name="handle">
-            <label for="password">Password: </label>
-            <input type="password" id="password" name="password">
-            <button id="bluesky-login-btn">Login</button>
-          </div>
-          <!-- Add ID for the user input form -->
-          <div id="user-input-form" style="display: none;">
+          <button id="logout-btn" style="display: none;">Logout</button>
+
+          <form id="login-form" autocomplete="on">
+            <label for="handle">Handle</label>
+            <input type="text" id="handle" name="handle" autocomplete="username"
+                   placeholder="alice.bsky.social" required>
+
+            <label for="password">App password</label>
+            <input type="password" id="password" name="password"
+                   autocomplete="current-password" required>
+
+            <details id="pds-url-container">
+              <summary>Advanced: custom PDS</summary>
+              <label for="pds-url">PDS URL</label>
+              <input type="text" id="pds-url" name="pds-url"
+                     placeholder="auto-discover from handle">
+            </details>
+
+            <button type="submit" id="bluesky-login-btn">Login</button>
+          </form>
+
+          <form id="user-input-form" style="display: none;" autocomplete="off">
             <h2>Create Bluesky Post</h2>
-            <label for="use-og-data-checkbox">Use the tab link</label>
-            <input type="checkbox" id="use-og-data-checkbox" name="use-og-data-checkbox">
-            <textarea id="user-text-input" placeholder="Add your message..."></textarea>
-            <button id="bluesky-post-btn">Create Post</button>
-          </div>
+            <label for="use-og-data-checkbox">
+              <input type="checkbox" id="use-og-data-checkbox" name="use-og-data-checkbox">
+              Use the tab link
+            </label>
+            <textarea id="user-text-input" placeholder="Add your message..." maxlength="3000"></textarea>
+            <div class="char-counter-row">
+              <small id="char-count" aria-live="polite">0 / 300</small>
+              <button type="submit" id="bluesky-post-btn">Create Post</button>
+            </div>
+          </form>
         </div>
         <div class="content-box" id="preview">
           <div class="preview-box__content" id="preview-og-data">
@@ -49,7 +60,7 @@
           </div>
         </div>
         <div class="content-box" id="data">
-          <button class="top-action-btn" title="copy" id="copy-btn">
+          <button class="top-action-btn" title="copy" aria-label="Copy OpenGraph data as JSON" id="copy-btn">
             &#128203;
           </button>
           <div class="data-box__content">

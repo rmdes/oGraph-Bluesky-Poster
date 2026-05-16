@@ -8,40 +8,77 @@ import {
 import data from "./state";
 import { getImageWidth } from "./utils";
 
-const getNoPreviewTemplateString = () => {
-  return `<h3 class="no-data">${NO_OG_DATA}</h3>`;
+const buildNoPreviewNode = () => {
+  const heading = document.createElement("h3");
+  heading.className = "no-data";
+  heading.textContent = NO_OG_DATA;
+  return heading;
 };
 
-const getCodeTemplateString = () => {
-  let templateString = "{<br/>";
+const buildCodeNode = () => {
+  const fragment = document.createDocumentFragment();
+  fragment.appendChild(document.createTextNode("{"));
+  fragment.appendChild(document.createElement("br"));
   for (const [key, value] of Object.entries(data.getData())) {
-    templateString += `<span class="key">${key}</span>: <span class="value">${value}</span></br>`;
+    const keySpan = document.createElement("span");
+    keySpan.className = "key";
+    keySpan.textContent = key;
+    const valueSpan = document.createElement("span");
+    valueSpan.className = "value";
+    valueSpan.textContent = value;
+    fragment.appendChild(keySpan);
+    fragment.appendChild(document.createTextNode(": "));
+    fragment.appendChild(valueSpan);
+    fragment.appendChild(document.createElement("br"));
   }
-  templateString += "}";
-  return templateString;
+  fragment.appendChild(document.createTextNode("}"));
+  return fragment;
 };
 
-const getPreviewTemplateString = (
+const isSafeImageUrl = (url) => {
+  if (typeof url !== "string" || url.trim() === "") return false;
+  try {
+    const parsed = new URL(url, window.location.href);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
+const buildPreviewNode = (
   previewType,
   { title, description, imageSrc, siteName, url }
 ) => {
-  let templateString = "";
+  const fragment = document.createDocumentFragment();
 
-  const imageDivDefaultStyle = `height:${PREVIEW_IMG_HEIGHT}px;`;
-  const imageContainerComputedStyle =
-    previewType === PREVIEW_UI.WITH_IMAGE
-      ? `style="${imageDivDefaultStyle}background: url('${imageSrc}') no-repeat top / contain;"`
-      : `style="${imageDivDefaultStyle}"`;
+  const imageDiv = document.createElement("div");
+  imageDiv.style.height = `${PREVIEW_IMG_HEIGHT}px`;
+  if (previewType === PREVIEW_UI.WITH_IMAGE && isSafeImageUrl(imageSrc)) {
+    imageDiv.style.backgroundImage = `url(${JSON.stringify(imageSrc)})`;
+    imageDiv.style.backgroundRepeat = "no-repeat";
+    imageDiv.style.backgroundPosition = "top";
+    imageDiv.style.backgroundSize = "contain";
+  }
+  fragment.appendChild(imageDiv);
 
-  templateString += `
-    <div ${imageContainerComputedStyle}></div>
-    <h2>${title ?? ""}</h2>
-    <p>
-     ${description ?? ""}
-    </p>
-    <h4>${siteName ?? url ?? ""}</h4>
-  `;
-  return templateString;
+  const titleEl = document.createElement("h2");
+  titleEl.textContent = title ?? "";
+  fragment.appendChild(titleEl);
+
+  const descEl = document.createElement("p");
+  descEl.textContent = description ?? "";
+  fragment.appendChild(descEl);
+
+  const footerEl = document.createElement("h4");
+  footerEl.textContent = siteName ?? url ?? "";
+  fragment.appendChild(footerEl);
+
+  return fragment;
+};
+
+const replaceChildren = (container, node) => {
+  container.textContent = "";
+  container.appendChild(node);
 };
 
 
@@ -81,10 +118,10 @@ export function updateBlueskyLoginUI(success, handle, pdsUrl) {
 export function updateDataView() {
   const dataUIContainer = document.getElementById(CODE_CONTAINER_ID);
   if (Object.keys(data.getData()).length) {
-    dataUIContainer.innerHTML = getCodeTemplateString();
+    replaceChildren(dataUIContainer, buildCodeNode());
     return;
   }
-  dataUIContainer.innerHTML = "{}";
+  dataUIContainer.textContent = "{}";
 }
 
 /*populate preview UI with data from chrome script execution*/
@@ -98,32 +135,32 @@ export function updatePreview() {
       site_name: siteName,
       url,
     } = data.getData();
-    let template;
     getImageWidth(imageSrc)
-      .then(({ width, height }) => {
-        template = getPreviewTemplateString(PREVIEW_UI.WITH_IMAGE, {
-          title,
-          description,
-          imageSrc,
-          siteName,
-          url,
-          imgWidth: width,
-          imgHeight: height,
-        });
+      .then(() => {
+        replaceChildren(
+          previewContainer,
+          buildPreviewNode(PREVIEW_UI.WITH_IMAGE, {
+            title,
+            description,
+            imageSrc,
+            siteName,
+            url,
+          })
+        );
       })
       .catch(() => {
-        template = getPreviewTemplateString(PREVIEW_UI.WITHOUT_IMAGE, {
-          title,
-          description,
-          siteName,
-          url,
-        });
-      })
-      .finally(() => {
-        previewContainer.innerHTML = template;
+        replaceChildren(
+          previewContainer,
+          buildPreviewNode(PREVIEW_UI.WITHOUT_IMAGE, {
+            title,
+            description,
+            siteName,
+            url,
+          })
+        );
       });
   } else {
-    previewContainer.innerHTML = getNoPreviewTemplateString();
+    replaceChildren(previewContainer, buildNoPreviewNode());
   }
 }
 

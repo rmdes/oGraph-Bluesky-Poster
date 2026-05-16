@@ -28,7 +28,7 @@ const html = fs.readFileSync(
 const getMockDOM = () => {
   return {
     classList: { contains: jest.fn(), remove: jest.fn(), add: jest.fn() },
-    innerHTML: "",
+    textContent: "",
     style: { display: "" },
   };
 };
@@ -66,7 +66,7 @@ describe("Application event handlers: showToast helper method", () => {
     });
     expect(mockToastElement.style.display).toEqual(DISPLAY_BLOCK);
     expect(mockToastElement.classList.remove).toBeCalledTimes(1);
-    expect(mockToastElement.innerHTML).toEqual(COPY_SUCCESSFUL);
+    expect(mockToastElement.textContent).toEqual(COPY_SUCCESSFUL);
   });
 
   test("displays a error toast with the error message", () => {
@@ -79,7 +79,7 @@ describe("Application event handlers: showToast helper method", () => {
     expect(mockToastElement.style.display).toEqual(DISPLAY_BLOCK);
     expect(mockToastElement.classList.add).toBeCalledTimes(1);
     expect(mockToastElement.classList.add).toBeCalledWith(ERROR);
-    expect(mockToastElement.innerHTML).toEqual(COPY_FAILED);
+    expect(mockToastElement.textContent).toEqual(COPY_FAILED);
   });
 });
 
@@ -121,7 +121,7 @@ describe("Application event handlers: hideToast helper method", () => {
     expect(mockToastElement.style.display).toEqual(DISPLAY_NONE);
     expect(mockToastElement.classList.remove).toBeCalledTimes(1);
     expect(mockToastElement.classList.remove).toBeCalledWith(ERROR);
-    expect(mockToastElement.innerHTML).toEqual("");
+    expect(mockToastElement.textContent).toEqual("");
   });
 });
 

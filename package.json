@@ -1,10 +1,10 @@
 {
-  "name": "ographpreviewer",
-  "version": "2.0.0",
-  "description": "",
+  "name": "ograph-bluesky-poster",
+  "version": "2.0.1",
+  "description": "A Chrome extension to post the current tab to Bluesky as a rich link card built from the page's OpenGraph metadata.",
   "main": "src/browser_action/popup.js",
   "engines": {
-    "node": "14.x"
+    "node": ">=20"
   },
   "scripts": {
     "build": "node_modules/.bin/webpack --config webpack.config.js",
@@ -13,19 +13,28 @@
     "test:coverage": "jest --coverage"
   },
   "jest": {
-    "verbose": true
+    "verbose": true,
+    "setupFiles": ["<rootDir>/tests/setup.js"]
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Parthipan-Natkunam/oGraph-previwer.git"
+    "url": "git+https://github.com/rmdes/oGraph-Bluesky-Poster.git"
   },
-  "keywords": [],
-  "author": "Parthipan Natkunam",
+  "keywords": [
+    "bluesky",
+    "atproto",
+    "chrome-extension",
+    "opengraph"
+  ],
+  "author": "Ricardo Mendes",
+  "contributors": [
+    "Parthipan Natkunam (original oGraph Previewer this project is based on)"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Parthipan-Natkunam/oGraph-previwer/issues"
+    "url": "https://github.com/rmdes/oGraph-Bluesky-Poster/issues"
   },
-  "homepage": "https://github.com/Parthipan-Natkunam/oGraph-previwer#readme",
+  "homepage": "https://github.com/rmdes/oGraph-Bluesky-Poster#readme",
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
