@@ -25,14 +25,23 @@ When the popup opens, the extension injects a small scraper into the active tab,
 - Webpack + Babel — single-bundle output
 - Jest — unit tests for the auth-retry wrapper, state, view helpers, and event handlers
 
-### Build
+### Install
+
+Download the latest pre-built package (always points at the latest release):
+
+- **Chrome / Vivaldi / any Chromium browser**: [OGraph-Bluesky-Poster-chrome.zip](https://github.com/rmdes/oGraph-Bluesky-Poster/releases/latest/download/OGraph-Bluesky-Poster-chrome.zip)
+- **Firefox** (109+): [OGraph-Bluesky-Poster-firefox.xpi](https://github.com/rmdes/oGraph-Bluesky-Poster/releases/latest/download/OGraph-Bluesky-Poster-firefox.xpi)
+
+Full release history: [github.com/rmdes/oGraph-Bluesky-Poster/releases](https://github.com/rmdes/oGraph-Bluesky-Poster/releases)
+
+### Build from source
 
 ```bash
 npm install
-npm run build
+npm run package:all
 ```
 
-The output directory `dist/` contains the production-ready unpacked extension. Load it via `chrome://extensions` → "Load unpacked".
+Produces both `OGraph-Bluesky-Poster-chrome.zip` (load via `chrome://extensions` → Developer mode → "Load unpacked") and `OGraph-Bluesky-Poster-firefox.xpi` (load via `about:debugging` → "Load Temporary Add-on").
 
 ### Test
 

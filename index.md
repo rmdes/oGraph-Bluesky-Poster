@@ -23,23 +23,37 @@ Authentication uses standard atproto session tokens, with `refreshSession` calle
 
 ## Install
 
-Build from source (one-time):
+### Download the latest pre-built package
+
+- **Chrome / Vivaldi / any Chromium browser**: [OGraph-Bluesky-Poster-chrome.zip](https://github.com/rmdes/oGraph-Bluesky-Poster/releases/latest/download/OGraph-Bluesky-Poster-chrome.zip)
+- **Firefox** (109+): [OGraph-Bluesky-Poster-firefox.xpi](https://github.com/rmdes/oGraph-Bluesky-Poster/releases/latest/download/OGraph-Bluesky-Poster-firefox.xpi)
+
+These links always point at the most recent release. Full release history with version-stamped archives: [github.com/rmdes/oGraph-Bluesky-Poster/releases](https://github.com/rmdes/oGraph-Bluesky-Poster/releases).
+
+### Sideload in Chrome / Vivaldi
+
+1. Unzip the downloaded file
+2. Go to `chrome://extensions`
+3. Enable "Developer mode" (top-right)
+4. Click "Load unpacked"
+5. Select the unzipped folder
+
+### Sideload in Firefox
+
+1. Go to `about:debugging#/runtime/this-firefox`
+2. Click "Load Temporary Add-on..."
+3. Select the `.xpi` file
+
+For permanent install on Firefox stable, the extension needs to be signed by Mozilla — that happens through the AMO listing.
+
+### Build from source
 
 ```bash
 git clone https://github.com/rmdes/oGraph-Bluesky-Poster.git
 cd oGraph-Bluesky-Poster
 npm install
-npm run build
+npm run package:all     # produces both .zip and .xpi
 ```
-
-Then in Vivaldi / Chrome / any Chromium-based browser:
-
-1. Go to `chrome://extensions`
-2. Enable "Developer mode" (top-right)
-3. Click "Load unpacked"
-4. Select the `dist/` folder
-
-For pre-built releases see the [GitHub releases page](https://github.com/rmdes/oGraph-Bluesky-Poster/releases).
 
 ## Privacy
 
