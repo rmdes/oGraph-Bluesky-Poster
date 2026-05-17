@@ -1,6 +1,6 @@
 {
   "name": "ograph-bluesky-poster",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A Chrome extension to post the current tab to Bluesky as a rich link card built from the page's OpenGraph metadata.",
   "main": "src/browser_action/popup.js",
   "engines": {
