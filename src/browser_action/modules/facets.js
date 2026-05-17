@@ -9,6 +9,15 @@
 // "see example.com." Includes a small set of trailing chars to strip.
 const URL_RE = /https?:\/\/[^\s<>()]+[^\s<>().,;:!?'"]/g;
 
+// Returns the first http(s) URL found in the text, or null. Useful for the
+// auto-card flow that wants to know "does this post mention something I
+// should try to embed?"
+export function findFirstLink(text) {
+  if (typeof text !== "string") return null;
+  const match = text.match(URL_RE);
+  return match ? match[0] : null;
+}
+
 // Bluesky handles: alphanumeric + hyphen, at least one dot, ascii-only.
 // Anchored to a leading @ that isn't preceded by another word char (so
 // "user@host" inside an email isn't matched).

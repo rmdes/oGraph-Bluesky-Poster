@@ -6,8 +6,9 @@ import { saveMany, loadMany, clearMany } from "./storage";
 import { updateBlueskyLoginUI } from "./viewRenderers";
 import { notify } from "./eventHandlers";
 import { NOTIFY_SUCCESS, NOTIFY_CRITICAL } from "./constants";
-import { countGraphemes, POST_MAX_GRAPHEMES } from "./facets";
+import { countGraphemes, POST_MAX_GRAPHEMES, findFirstLink } from "./facets";
 import { discoverPds } from "./identity";
+import { fetchOgDataForUrl } from "./linkPreview";
 import data from "./state";
 
 const SESSION_KEYS = ["accessJwt", "refreshJwt", "did", "handle", "pdsUrl"];
@@ -97,14 +98,31 @@ async function onCreatePost(event) {
     return;
   }
 
+  // Auto-card flow: if the user did not explicitly request the current tab
+  // link but their post text contains a URL, fetch its OG data and use it as
+  // the embed. Matches official Bluesky client behavior. Plain-text post is
+  // still the fallback when the fetch fails or returns no usable card data.
+  let ogDataForEmbed = ogData;
+  let shouldEmbed = useOpenGraphData;
+  if (!useOpenGraphData) {
+    const linkInText = findFirstLink(userText);
+    if (linkInText) {
+      const fetched = await fetchOgDataForUrl(linkInText);
+      if (fetched && (fetched.title || fetched.description || fetched.image)) {
+        ogDataForEmbed = fetched;
+        shouldEmbed = true;
+      }
+    }
+  }
+
   const result = await blueskyApi.createPost(
     session.pdsUrl,
     session.accessJwt,
     session.refreshJwt,
     session.did,
-    ogData,
+    ogDataForEmbed,
     userText,
-    useOpenGraphData
+    shouldEmbed
   );
 
   if (result.unauthenticated) {
