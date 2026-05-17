@@ -1,6 +1,6 @@
 {
   "name": "oGraph Bluesky Poster",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "manifest_version": 3,
   "description": "A Chrome Bluesky client that uses OpenGraph tags from your current open tab to post to Bluesky",
   "author": "Ricardo Mendes",
