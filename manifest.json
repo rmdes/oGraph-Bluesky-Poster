@@ -1,6 +1,6 @@
 {
   "name": "oGraph Bluesky Poster",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "manifest_version": 3,
   "description": "A Chrome Bluesky client that uses OpenGraph tags from your current open tab to post to Bluesky",
   "author": "Ricardo Mendes",
@@ -21,7 +21,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "ograph-bluesky-poster@rmendes.net",
-      "strict_min_version": "109.0",
+      "strict_min_version": "142.0",
       "data_collection_permissions": {
         "required": ["authenticationInfo"]
       }
