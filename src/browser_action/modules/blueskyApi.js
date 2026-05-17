@@ -125,11 +125,26 @@ export async function withTransientRetry(makeRequest, opts = {}) {
   return response;
 }
 
-// Try `makeRequest(accessJwt)`; if it 401s, refresh once and retry.
-// On refresh failure, returns { unauthenticated: true } so callers can force logout.
+// atproto signals an expired access token as HTTP 400 (not 401) with an
+// error body of { error: "ExpiredToken", ... }. 401 also occurs for missing
+// or malformed bearer tokens. Both should trigger refresh.
+async function isAuthRetryable(response) {
+  if (response.status === 401) return true;
+  if (response.status !== 400) return false;
+  try {
+    const body = await response.clone().json();
+    return body && (body.error === "ExpiredToken" || body.error === "InvalidToken");
+  } catch {
+    return false;
+  }
+}
+
+// Try `makeRequest(accessJwt)`; if it returns an expired-token error,
+// refresh once and retry. On refresh failure, returns { unauthenticated: true }
+// so callers can force logout.
 export async function withAuthRetry({ pdsUrl, accessJwt, refreshJwt }, makeRequest) {
   let response = await makeRequest(accessJwt);
-  if (response.status !== 401) return { response, accessJwt };
+  if (!(await isAuthRetryable(response))) return { response, accessJwt };
 
   const fresh = await refreshSession(pdsUrl, refreshJwt);
   if (!fresh.success) {
@@ -260,8 +275,24 @@ export async function createPost(
 
   if (unauthenticated) return { success: false, unauthenticated: true };
 
+  if (!response.ok) {
+    return { success: false, error: await extractErrorMessage(response) };
+  }
   const data = await response.json();
   return data.cid
     ? { success: true, cid: data.cid }
-    : { success: false };
+    : { success: false, error: "Server returned unexpected response shape" };
+}
+
+// atproto error responses are JSON of the form { error: "InvalidRequest",
+// message: "..." }. Surface them so callers can show something useful.
+async function extractErrorMessage(response) {
+  try {
+    const body = await response.json();
+    if (body.message) return body.message;
+    if (body.error) return body.error;
+  } catch {
+    // body wasn't JSON
+  }
+  return `HTTP ${response.status}`;
 }

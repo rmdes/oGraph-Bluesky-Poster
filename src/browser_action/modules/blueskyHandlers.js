@@ -114,7 +114,10 @@ async function onCreatePost(event) {
   }
 
   if (!result.success) {
-    notify(NOTIFY_CRITICAL, "Failed to create post.");
+    notify(
+      NOTIFY_CRITICAL,
+      result.error ? `Post failed: ${result.error}` : "Failed to create post."
+    );
     return;
   }
 

@@ -73,7 +73,10 @@ describe("withAuthRetry", () => {
   });
 
   test("does not retry on non-401 errors (e.g. 500)", async () => {
-    const serverErrorResponse = { status: 500 };
+    const serverErrorResponse = {
+      status: 500,
+      clone: () => ({ json: () => Promise.reject(new Error("no body")) }),
+    };
     const makeRequest = jest.fn().mockResolvedValue(serverErrorResponse);
 
     const result = await withAuthRetry(
@@ -85,6 +88,81 @@ describe("withAuthRetry", () => {
     expect(result.response).toBe(serverErrorResponse);
     expect(result.unauthenticated).toBeUndefined();
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test("does not retry on plain 400 without ExpiredToken error body", async () => {
+    // 400 with some other lexicon-validation error — should NOT refresh.
+    const bodyJson = { error: "InvalidRequest", message: "Record/text invalid" };
+    const validationError = {
+      status: 400,
+      clone: () => ({ json: () => Promise.resolve(bodyJson) }),
+    };
+    const makeRequest = jest.fn().mockResolvedValue(validationError);
+
+    const result = await withAuthRetry(
+      { pdsUrl: PDS, accessJwt: "old-access", refreshJwt: "old-refresh" },
+      makeRequest
+    );
+
+    expect(makeRequest).toHaveBeenCalledTimes(1);
+    expect(result.response).toBe(validationError);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test("refreshes and retries on 400 with error: ExpiredToken (atproto convention)", async () => {
+    const expiredBody = { error: "ExpiredToken", message: "Token has expired" };
+    const expired = {
+      status: 400,
+      clone: () => ({ json: () => Promise.resolve(expiredBody) }),
+    };
+    const retrySuccess = {
+      status: 200,
+      clone: () => ({ json: () => Promise.resolve({}) }),
+    };
+    const makeRequest = jest
+      .fn()
+      .mockResolvedValueOnce(expired)
+      .mockResolvedValueOnce(retrySuccess);
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({ accessJwt: "new-access", refreshJwt: "new-refresh" }),
+    });
+
+    const result = await withAuthRetry(
+      { pdsUrl: PDS, accessJwt: "old-access", refreshJwt: "old-refresh" },
+      makeRequest
+    );
+
+    expect(makeRequest).toHaveBeenCalledTimes(2);
+    expect(makeRequest).toHaveBeenNthCalledWith(2, "new-access");
+    expect(result.response).toBe(retrySuccess);
+    expect(result.unauthenticated).toBeUndefined();
+  });
+
+  test("refreshes on 400 with error: InvalidToken", async () => {
+    const invalidBody = { error: "InvalidToken", message: "Bad token" };
+    const invalid = {
+      status: 400,
+      clone: () => ({ json: () => Promise.resolve(invalidBody) }),
+    };
+    const makeRequest = jest
+      .fn()
+      .mockResolvedValueOnce(invalid)
+      .mockResolvedValueOnce({ status: 200 });
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ accessJwt: "A", refreshJwt: "R" }),
+    });
+
+    await withAuthRetry(
+      { pdsUrl: PDS, accessJwt: "old-access", refreshJwt: "old-refresh" },
+      makeRequest
+    );
+
+    expect(makeRequest).toHaveBeenCalledTimes(2);
   });
 
   test("refreshes the session and retries the request on 401", async () => {
