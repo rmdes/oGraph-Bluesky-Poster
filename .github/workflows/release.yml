@@ -1,0 +1,90 @@
+name: Release
+
+# Fires when an annotated tag matching v* is pushed (e.g. v2.1.0, v2.1.1).
+# Builds the Chrome zip and Firefox XPI, runs the test suite first, and
+# attaches both artifacts to the GitHub Release for that tag (creating the
+# release from the annotated tag's message if it doesn't already exist).
+#
+# Security note: all GitHub context values flow into shell via env: blocks
+# rather than inline ${{ }} substitution, so even crafted refs can't trigger
+# command injection. See: https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # required to create / update releases
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 pulls full history so the annotated tag message is
+          # available to gh release create --notes-from-tag below.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Verify tag matches manifest version
+        # Tag v2.1.0 must match manifest "version": "2.1.0". Catches the
+        # "forgot to bump the manifest before tagging" mistake at CI time.
+        # GITHUB_REF_NAME is a built-in env var set by Actions; safe to use
+        # directly because git tag names cannot contain shell-special chars.
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          MANIFEST_VERSION=$(node -p "require('./manifest.json').version")
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME ($TAG_VERSION) does not match manifest version ($MANIFEST_VERSION)"
+            exit 1
+          fi
+          echo "Tag and manifest both at $MANIFEST_VERSION"
+
+      - name: Build Chrome zip and Firefox XPI
+        run: npm run package:all
+
+      - name: Rename packages with version
+        # Version-stamped filenames make older releases unambiguous when users
+        # download from the Releases page.
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mv OGraph-Bluesky-Poster-chrome.zip "OGraph-Bluesky-Poster-${VERSION}-chrome.zip"
+          mv OGraph-Bluesky-Poster-firefox.xpi "OGraph-Bluesky-Poster-${VERSION}-firefox.xpi"
+          ls -lh OGraph-Bluesky-Poster-*
+
+      - name: Create or update GitHub Release
+        env:
+          # Pass values through env to avoid ${{ }} interpolation directly
+          # into the shell, which is the documented injection-safe pattern.
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG already exists, uploading artifacts with --clobber"
+            gh release upload "$TAG" \
+              OGraph-Bluesky-Poster-*-chrome.zip \
+              OGraph-Bluesky-Poster-*-firefox.xpi \
+              --clobber
+          else
+            echo "Creating release $TAG from annotated tag message"
+            gh release create "$TAG" \
+              OGraph-Bluesky-Poster-*-chrome.zip \
+              OGraph-Bluesky-Poster-*-firefox.xpi \
+              --verify-tag \
+              --notes-from-tag \
+              --title "$TAG"
+          fi
