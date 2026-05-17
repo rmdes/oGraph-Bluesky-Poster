@@ -1,0 +1,19 @@
+theme: jekyll-theme-cayman
+title: oGraph Bluesky Poster
+description: A Chrome extension to post the current browser tab to Bluesky as a rich link card built from the page's OpenGraph metadata.
+show_downloads: true
+google_analytics:
+
+# Tell Jekyll to ignore source/build artifacts when generating the Pages site.
+exclude:
+  - dist
+  - node_modules
+  - src
+  - tests
+  - webpack.config.js
+  - package.json
+  - package-lock.json
+  - "*.zip"
+  - .babelrc
+  - .gitignore
+  - .github
