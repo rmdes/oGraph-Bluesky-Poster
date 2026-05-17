@@ -5,8 +5,9 @@ dist
 coverage
 yarn.lock
 
-# Release artifacts: rebuild via `yarn build && (cd dist && zip ...)`, don't commit
+# Release artifacts: rebuild via `yarn package:chrome|firefox|all`, don't commit
 *.zip
+*.xpi
 
 # macOS Finder metadata
 .DS_Store

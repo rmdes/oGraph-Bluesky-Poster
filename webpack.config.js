@@ -38,6 +38,9 @@ module.exports = {
   output: {
     path: `${__dirname}/dist`,
     filename: "bundle.js",
+    // Wipe dist/ before every build so files removed from source (e.g. an
+    // unused icon) don't linger in the output and get re-zipped.
+    clean: true,
   },
   mode: "production",
   module: {

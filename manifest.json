@@ -17,5 +17,11 @@
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ograph-bluesky-poster@rmendes.net",
+      "strict_min_version": "109.0"
+    }
   }
 }

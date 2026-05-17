@@ -10,7 +10,10 @@
     "build": "node_modules/.bin/webpack --config webpack.config.js",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "package:chrome": "yarn build && cd dist && zip -r ../OGraph-Bluesky-Poster-chrome.zip . -x '*.map' '*.LICENSE.txt'",
+    "package:firefox": "yarn build && cd dist && zip -r ../OGraph-Bluesky-Poster-firefox.xpi . -x '*.map' '*.LICENSE.txt'",
+    "package:all": "yarn package:chrome && yarn package:firefox"
   },
   "jest": {
     "verbose": true,
