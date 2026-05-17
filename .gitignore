@@ -4,5 +4,10 @@ bundle.js
 dist
 coverage
 yarn.lock
-Bluesky-Poster.zip
-OGraph Bluesky Poster.zip
+
+# Release artifacts: rebuild via `yarn build && (cd dist && zip ...)`, don't commit
+*.zip
+
+# macOS Finder metadata
+.DS_Store
+**/.DS_Store
